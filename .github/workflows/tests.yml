@@ -26,8 +26,8 @@ jobs:
           pip install .
       - name: Lint
         run: |
-          mypy .
-          ruff .
+          mypy src tests
+          ruff src tests
       - name: Test
         run: |
           pytest
