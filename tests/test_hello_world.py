@@ -2,7 +2,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from hello.hello_world import print_hello_world
+from hello_world.hello_world import print_hello_world
 
 
 def test_hello_world(monkeypatch: pytest.MonkeyPatch):
