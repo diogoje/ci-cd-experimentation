@@ -1,2 +1,2 @@
-def goodbye_world():
+def goodbye_world() -> None:
     print("Goodbye world!")
