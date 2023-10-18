@@ -6,7 +6,7 @@ on:
   pull_request:
 
 env:
-  REGISTRY_IMAGE: diogoje/my-hello-world-app:latest
+  REGISTRY_IMAGE: diogoje/my-hello-world-app
 
 jobs:
   docker:
