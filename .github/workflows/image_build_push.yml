@@ -1,23 +1,51 @@
-name: Docker image build and push to Docker Hub
+name: CI
 
 on:
   push:
     branches: ["main"]
   pull_request:
 
+env:
+  REGISTRY_IMAGE: diogoje/my-hello-world-app
+
 jobs:
-  build-image:
-    name: Build Image
+  docker:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform:
+          - linux/amd64
+          - linux/arm/v6
+          - linux/arm/v7
+          - linux/arm64
+
     steps:
-      - name: Docker Login
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY_IMAGE }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push Docker images
+      - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: diogoje/my-hello-world-app:latest
+          push: true
+          context: .
+          platforms: ${{ matrix.platform }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
